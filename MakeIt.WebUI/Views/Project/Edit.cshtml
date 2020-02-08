@@ -1,0 +1,138 @@
+﻿@using MakeIt.WebUI.ViewModel
+
+@model ProjectViewModel
+@{
+    ViewBag.Title = "MakeIt";
+    var message = ViewBag.SuccessMsg;
+    var actionResult = ViewBag.ActionResult;
+}
+
+<div id="page-wrapper">
+
+    @if (message != null)
+    {
+        <div id="message" class="alert alert-success " role="alert">
+            <strong>@message</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    @if (actionResult != null)
+    {
+        <div id="actionResult" class="alert alert-success" role="alert">
+            <strong>@actionResult</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Project - #@Model.Id</h1>
+        </div>
+    </div>
+    <!-- /.row -->
+
+    @if (Model.RoleInProject == MakeIt.BLL.Enum.RoleInProjectEnum.Owner)
+    {
+        using (Html.BeginForm("EditProject", "Project", FormMethod.Post, new { @id="projectForm", @role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <fieldset>
+                <input type="hidden" value="@Model.Id" name="id" />
+                <div class="form-group row">
+                    <div class="col-lg-6">
+                        @Html.TextBoxFor(m => m.Name, new { @id = "name", @class = "form-control", placeholder = "Name", @autofocus = "autofocus" })
+                        @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-lg-6">
+                        @Html.TextAreaFor(m => m.Description, 5, 9, new { @id = "description", @class = "form-control", placeholder = "Description" })
+                        @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-lg-1">
+                        <button id="editButton" type="submit" class="page-header btn btn-success" disabled>@ViewBag.ActionDetermination</button>
+                    </div>
+                    <div class="col-lg-1">
+                        <input type="button" value="Cancel" onclick="location.href='@Url.Action("Index","Project")';" class="page-header btn btn-success" />
+                    </div>
+                </div>
+            </fieldset>
+        }
+        <hr />
+    }
+
+    @if (Model.Id != null)
+    {
+        <div class="row">
+            <h3>Members</h3>
+            <div class="col-lg-2">
+                <table class="table table-bordered" cellspacing="0" cellpadding="3" width="100%" style="width: 0px;">
+                    <tbody>
+                        <tr>
+                            <td>@Model.Owner.Name</td>
+                            <td>@Model.Owner.Email</td>
+                            <td><span class="label label-info">Owner</span></td>
+                        </tr>
+
+                        @foreach (var member in Model.Members)
+                        {
+                            <tr>
+                                <td>@member.Name</td>
+                                <td>@member.Email</td>
+                                <td><span class="label label-default">Member</span></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr />
+
+        if (Model.RoleInProject == MakeIt.BLL.Enum.RoleInProjectEnum.Owner)
+        {
+            <form method="POST">
+                @Html.AntiForgeryToken()
+                <div class="form-group row">
+                    <h4>Send an invite to join</h4>
+                    <div class="col-lg-4">
+                        <input value="@Model.Id" name="projectId" type="hidden">
+
+                        <input id="emailInvite" name="email" class="form-control basicAutoComplete" type="text" autocomplete="off" placeholder="Enter email">
+
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="submit" value="Submit" id="sendButton" class="btn btn-success" formaction=@Url.Action("SendInviteEmail", "Account") formmethod="post" disabled />
+                    </div>
+                </div>
+            </form>
+        }
+    }
+
+</div>
+<!-- /.page-wrapper -->
+
+<script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.3.0/dist/latest/bootstrap-autocomplete.min.js"></script>
+<script src="~/Scripts/fillEmailInput.js"></script>
+<script src="~/Scripts/validateEmailInput.js"></script>
+<script src="~/Scripts/validateProjectInput.js"></script>
+<script type="text/javascript">
+    $(function () {
+        window.setTimeout(function () {
+            $('#actionResult').alert('close');
+        }, 2000);
+    });
+
+    $(function () {
+        window.setTimeout(function () {
+            $('#message').alert('close');
+        }, 2000);
+    });
+</script>

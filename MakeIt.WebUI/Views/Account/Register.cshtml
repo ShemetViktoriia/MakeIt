@@ -1,0 +1,67 @@
+﻿@using MakeIt.WebUI.ViewModel
+
+@model RegisterViewModel
+@{
+    ViewBag.Title = "MakeIt";
+}
+
+<div class="panel-body">
+    @using (Html.BeginForm("Register", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @role = "form", id = "RegisterForm" }))
+    {
+        @Html.AntiForgeryToken()
+        <fieldset>
+            <div class="form-group">
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", placeholder = "Username", @autofocus = "autofocus" })
+                @if (!ViewData.ModelState.IsValid && ViewData.ModelState["UserName"].Errors.Count != 0)
+                {
+                    <span class="field-validation-valid text-danger" data-valmsg-for="UserName" data-valmsg-replace="true"><span>@ViewData.ModelState["UserName"].Errors[0].ErrorMessage</span></span>
+                }
+                else
+                {
+                    @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                }
+            </div>
+            <div class="form-group">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "E-mail", @type = "email" })
+                @if (!ViewData.ModelState.IsValid && ViewData.ModelState["Email"].Errors.Count != 0)
+                {
+                    <span class="field-validation-valid text-danger" data-valmsg-for="Email" data-valmsg-replace="true"><span>@ViewData.ModelState["Email"].Errors[0].ErrorMessage</span></span>
+                }
+                else
+                {
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                }
+            </div>
+            <div class="form-group" id="password-strength">
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password" })
+                @if (!ViewData.ModelState.IsValid && ViewData.ModelState["Password"].Errors.Count != 0)
+                {
+                    <span class="field-validation-valid text-danger" data-valmsg-for="Password" data-valmsg-replace="true"><span>@ViewData.ModelState["Password"].Errors[0].ErrorMessage</span></span>
+                }
+                else
+                {
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                }
+            </div>
+            <div class="form-group" id="password-strength">
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirm password" })
+                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+            <div class="clr_10"></div>
+            <button class="g-recaptcha btn btn-lg btn-success btn-block"
+                    data-sitekey="@Model.RecaptchaPublicKey"
+                    data-callback="OnSubmit"
+                    data-size="invisible">
+                Register
+            </button>
+        </fieldset>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function OnSubmit(token) {
+            document.getElementById("RegisterForm").submit();
+        }
+    </script>
+}

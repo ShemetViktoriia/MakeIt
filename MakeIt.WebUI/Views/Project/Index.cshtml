@@ -1,0 +1,101 @@
+﻿@using MakeIt.WebUI.ViewModel;
+@using MakeIt.BLL.Enum;
+
+@model List<ProjectViewModel>
+
+@{
+    ViewBag.Title = "MakeIt";
+}
+
+<div id="page-wrapper">
+
+    <div class="row">
+        <div class="col-lg-10">
+            <h1 class="page-header">Projects</h1>
+        </div>
+        <div class="col-lg-2">
+            <button type="button" onclick="location.href='@Url.Action("Edit", "Project", routeValues: new { isNewProject = true})'" class="page-header btn btn-success">New project</button>
+        </div>
+    </div>
+    <!-- /.row -->
+
+    @if (Model.Any())
+    {
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table id="projectTable" class="display table-bordered" cellspacing="0" cellpadding="3" width="100%" style="width: 0px;">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Updated </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var project in Model)
+                                {
+                                    <tr>
+                                        @Html.Hidden(@project.Id.ToString())
+                                        <td>
+                                            <span>
+                                                @Html.ActionLink("#"+@project.Id.ToString()+" - " + @project.Name, "Edit", "Project",
+                                                new 
+                                                {
+                                                    projectId = @project.Id,
+                                                    isNewProject = false
+                                                },
+                                                htmlAttributes: new { @class = "text-dark" })
+                                            </span>&nbsp;
+                                            @if (project.RoleInProject == RoleInProjectEnum.Owner)
+                                            {
+                                                <span>&nbsp;</span><span class="label label-info">@project.RoleInProject</span>
+                                            }
+                                            @if (project.RoleInProject == RoleInProjectEnum.Member)
+                                            {
+                                                <span>&nbsp;</span><span class="label label-default">@project.RoleInProject</span>
+                                            }
+                                            @if (project.IsClosed)
+                                            {
+                                                <span>&nbsp;</span><span class="label label-danger">@ProjectStateEnum.Closed</span>
+                                            }
+                                        </td>
+                                        <td>@project.Description</td>
+
+                                        <td>@project.LastUpdateDate.Value.ToLocalTime()</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Updated </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+    }
+
+    else
+    {
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel-body">
+                    You don't have any projects yet.
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+<script src="~/Scripts/plugins/dataTables/projectList.js"></script>
+
+<!-- /.page-wrapper -->

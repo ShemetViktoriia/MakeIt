@@ -1,0 +1,66 @@
+﻿@using MakeIt.WebUI.ViewModel
+
+@model TaskShowViewModel
+@{
+    ViewBag.Title = "MakeIt";
+    Layout = "~/Views/Shared/_Layout_Cabinet.cshtml";
+}
+
+<div id="page-wrapper">
+
+    <div class="row col-lg-12">
+
+        <h3 class="page-header">@Model.Project: @Model.Title</h3>
+
+    </div>
+    <div class="row">
+        <button type="button" onclick="location.href='@Url.Action("Edit", "Task", new { taskId = Model.Id})'" class="page-header btn" style="margin-top:5px">Edit</button>
+        <button type="button" onclick="javascript:history.back()" class="page-header btn" style="margin-top:5px">Cancel</button>
+    </div>
+    <div class="row">
+        <div class="col-md-1"><b>Details:</b></div>
+    </div>
+    <div>
+        @Html.Hidden(Model.Id.ToString())
+        <div class="row" style="margin-bottom:3px;margin-top:3px;">
+            <div class="col-md-1">Priority:</div>
+            <div class="col-md-1">@Model.Priority</div>
+            <div class="col-md-2"></div>
+            <div class="col-md-1">Assignee:</div>
+            <div class="col-md-1">@Model.AssignedUser</div>
+        </div>
+    </div>
+    <div class="row" style="margin-bottom:3px;margin-top:3px;">
+        <div class="col-md-1">Status:</div>
+        <div class="col-md-1">@Model.Status</div>
+        <div class="col-md-2"></div>
+        <div class="col-md-1">Created:</div>
+        <div class="col-md-1">@Model.CreatedUser</div>
+    </div>
+    <div class="row" style="margin-bottom:3px;margin-top:3px;">
+        <div class="col-md-1">Due:</div>
+        <div class="col-md-1">@Model.DueDate.ToString("dd/MMM/yyyy")</div>
+    </div>
+    <div class="row">
+    </div>
+    <div class="row" style="margin-bottom:3px;margin-top:3px;">
+        <div class="col-md-1"><b>Description:</b></div>
+    </div>
+    <div class="row">
+    </div>
+    <div class="row" style="border:2px solid gainsboro; border-radius: 5px 5px;">
+        <div class="col-md-8">
+           <p>@Model.Description</p>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <button type="button" onclick="location.href='@Url.Action("Edit", "Task", new { taskId = Model.Id})'" class="page-header btn" style="margin-top:5px">Edit</button>
+        <button type="button" onclick="javascript:history.back()" class="page-header btn" style="margin-top:5px">Cancel</button>
+    </div>
+    <div class="row"></div>
+    <div class="row" style="margin-bottom:3px;margin-top:3px;">
+        <div class="col-md-1"><b>Comments:</b></div>
+    </div>
+</div>

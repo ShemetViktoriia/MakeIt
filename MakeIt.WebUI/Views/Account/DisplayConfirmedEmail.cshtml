@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "MakeIt";
+}
+
+<div class="panel-body">
+    <form>
+        <fieldset>
+            <h3>
+                Email confirmed
+            </h3>
+            <div class="form-group">
+                <p>
+                    You have successfully verified your email.
+                </p>
+                <span>
+                    @Html.ActionLink("Now you can enter into MakeIt", "Login", "Account", routeValues: null, htmlAttributes: new { @class = "text-light bg-dark" })
+                </span>
+            </div>
+        </fieldset>
+    </form>
+</div>

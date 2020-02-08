@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="660e660691c94c9aa5f6b018d639fa54" Name="Diagram1">
+        <EntityTypeShape EntityType="MakeItModel.Color" Width="1.5" PointX="3.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MakeItModel.Comment" Width="1.5" PointX="6" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="MakeItModel.ExceptionDetail" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MakeItModel.Label" Width="1.5" PointX="6" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MakeItModel.Milestone" Width="1.5" PointX="6" PointY="13.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MakeItModel.Priority" Width="1.5" PointX="6" PointY="17" IsExpanded="true" />
+        <EntityTypeShape EntityType="MakeItModel.Project" Width="1.5" PointX="3" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="MakeItModel.Status" Width="1.5" PointX="6" PointY="20.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MakeItModel.Task" Width="1.5" PointX="8.25" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="MakeItModel.User" Width="1.5" PointX="0.75" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="MakeItModel.UserClaim" Width="1.5" PointX="3" PointY="14.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="MakeItModel.UserLogin" Width="1.5" PointX="3" PointY="17.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MakeItModel.Visitor" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="MakeItModel.FK_dbo_Label_dbo_Color_ColorId" ManuallyRouted="false" />
+        <AssociationConnector Association="MakeItModel.FK_dbo_Comment_dbo_Task_TaskId" ManuallyRouted="false" />
+        <AssociationConnector Association="MakeItModel.FK_dbo_Comment_dbo_User_User_Id" ManuallyRouted="false" />
+        <AssociationConnector Association="MakeItModel.FK_dbo_Task_dbo_Milestone_MilestoneId" ManuallyRouted="false" />
+        <AssociationConnector Association="MakeItModel.FK_dbo_Task_dbo_Priority_PriorityId" ManuallyRouted="false" />
+        <AssociationConnector Association="MakeItModel.FK_dbo_Project_dbo_User_OwnerId" ManuallyRouted="false" />
+        <AssociationConnector Association="MakeItModel.FK_dbo_Task_dbo_Project_ProjectId" ManuallyRouted="false" />
+        <AssociationConnector Association="MakeItModel.FK_dbo_Task_dbo_Status_StatusId" ManuallyRouted="false" />
+        <AssociationConnector Association="MakeItModel.FK_dbo_Task_dbo_User_AssignedUserId" ManuallyRouted="false" />
+        <AssociationConnector Association="MakeItModel.FK_dbo_Task_dbo_User_CreatedUserId" ManuallyRouted="false" />
+        <AssociationConnector Association="MakeItModel.FK_UserClaim_User" ManuallyRouted="false" />
+        <AssociationConnector Association="MakeItModel.FK_UserLogin_User" ManuallyRouted="false" />
+        <AssociationConnector Association="MakeItModel.ProjectUser" ManuallyRouted="false" />
+        <AssociationConnector Association="MakeItModel.TaskLabel" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="MakeItModel.Role" Width="1.5" PointX="3" PointY="20.25" />
+        <AssociationConnector Association="MakeItModel.UserRole" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

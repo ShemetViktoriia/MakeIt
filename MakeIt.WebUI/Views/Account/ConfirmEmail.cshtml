@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "MakeIt";
+}
+
+<div class="panel-body">
+    <form>
+        <fieldset>
+            <h3>
+                Confirm Email
+            </h3>
+            <div class="form-group">
+                <span>
+                    An e-mail with a confirmation code has been sent to you. Follow the link and then login to your account.
+                </span>
+            </div>
+            <span>Message sent to mail:</span>
+            <span><a href="mailto:@ViewBag.Email">@ViewBag.Email</a></span>
+        </fieldset>
+    </form>
+</div>
+
