@@ -142,7 +142,7 @@ namespace MakeIt.BLL.IdentityConfig
                 .FirstOrDefaultAsync(u => u.Id.Equals(userLogin.UserID));
         }
 
-        public Task<IList<UserLoginInfo>> GetUserLoginsAsync(User user)
+        public Task<IList<UserLoginInfo>> GetLoginsAsync(User user)
         {
             if (user == null)
             {
@@ -199,7 +199,7 @@ namespace MakeIt.BLL.IdentityConfig
             return System.Threading.Tasks.Task.FromResult(0);
         }
 
-        public Task<IList<Claim>> GetUserClaimsAsync(User user)
+        public Task<IList<Claim>> GetClaimsAsync(User user)
         {
             if (user == null)
             {
@@ -542,16 +542,6 @@ namespace MakeIt.BLL.IdentityConfig
             {
                 this.db.Dispose();
             }
-        }
-
-        public Task<IList<UserLoginInfo>> GetLoginsAsync(User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IList<Claim>> GetClaimsAsync(User user)
-        {
-            throw new NotImplementedException();
         }
     }
 }
