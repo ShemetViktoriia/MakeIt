@@ -107,6 +107,7 @@
     <Compile Include="IdentityConfig\EmailService.cs" />
     <Compile Include="IdentityConfig\RoleStore.cs" />
     <Compile Include="IdentityConfig\UserStore.cs" />
+    <Compile Include="Pagination\IPagination.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\ApplicationOAuthProvider.cs" />
     <Compile Include="Service\Authorithation\AuthorizationService.cs" />

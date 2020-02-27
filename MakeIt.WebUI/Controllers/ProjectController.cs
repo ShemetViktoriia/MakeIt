@@ -6,8 +6,8 @@ using MakeIt.WebUI.Filters;
 using MakeIt.WebUI.SignalR.Hubs;
 using MakeIt.WebUI.ViewModel;
 using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -27,10 +27,30 @@ namespace MakeIt.WebUI.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            int userId = User.Identity.GetUserId<int>();
-            var projectDTOList = _projectService.GetUserProjectsById(userId).ToList();
-            var projectViewModelList = _mapper.Map<IEnumerable<ProjectViewModel>>(projectDTOList);
-            return View(projectViewModelList);
+            //int userId = User.Identity.GetUserId<int>();
+            //var projectDTOList = _projectService.GetUserProjectsById(userId).ToList();
+            //var projectViewModelList = _mapper. Map<IEnumerable<ProjectViewModel>>(projectDTOList);
+            //return View(projectViewModelList);
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Index(int? draw, int? start, int? length)
+        {
+            string search = Request["search[value]"];
+            var totalRecords = 0;
+            var recordsFiltered = 0;
+            start = start.HasValue ? start / 10 : 0;
+
+            var projectListDTO = _projectService.GetPaginated(search, start.Value, length ?? 0, out totalRecords, out recordsFiltered);
+            var projectListViewModel = _mapper.Map<IEnumerable<ProjectViewModel>>(projectListDTO);
+            return Json(new
+            {
+                draw = Convert.ToInt32(draw),
+                recordsTotal = totalRecords,
+                recordsFiltered,
+                data = projectListViewModel
+            }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]

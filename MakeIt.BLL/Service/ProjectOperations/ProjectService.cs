@@ -2,6 +2,7 @@
 using MakeIt.BLL.Common;
 using MakeIt.BLL.DTO;
 using MakeIt.BLL.Enum;
+using MakeIt.BLL.Pagination;
 using MakeIt.EF;
 using MakeIt.Repository.UnitOfWork;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Linq;
 
 namespace MakeIt.BLL.Service.ProjectOperations
 {
-    public interface IProjectService : IEntityService<Project>
+    public interface IProjectService : IEntityService<Project>, IPagination<ProjectDTO>
     {
         IEnumerable<ProjectDTO> GetUserProjectsById(int userId);
         ProjectDTO GetProjectById(int projectId);
@@ -91,6 +92,26 @@ namespace MakeIt.BLL.Service.ProjectOperations
             projectMemberDTOList.ToList().ForEach(p => p.RoleInProject = RoleInProjectEnum.Member);
 
             return projectOwnerDTOList.Union(projectMemberDTOList);
+        }
+
+        public IEnumerable<ProjectDTO> GetPaginated(string filter, int initialPage, int pageSize, out int totalRecords, out int recordsFiltered)
+        {
+            var data = _unitOfWork.GetRepository<Project>().GetAll().AsQueryable();
+            totalRecords = data.Count();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                data = data.Where(p => p.Name.ToUpper().Contains(filter.ToUpper()) || p.Description.ToUpper().Contains(filter.ToUpper()));
+            }
+
+            recordsFiltered = data.Count();
+
+            data = data
+                    .OrderBy(p => p.Name)
+                    .Skip(initialPage * pageSize)
+                    .Take(pageSize);
+
+            return _mapper.Map<IEnumerable<ProjectDTO>>(data);
         }
     }
 }

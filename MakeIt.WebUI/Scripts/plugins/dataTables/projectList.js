@@ -1,9 +1,28 @@
 $(document).ready(function () {
     $('#projectTable').DataTable({
-        "info": true,
-        stateSave: true,
+        "paging": true,
+        "serverSide": "true",
+        "processing": "true",
+        "aLengthMenu": [[10, 25, -1], [10, 25, "All"]],
+        "ajax": {
+            "url": $("#projectTable").prop("data-url"),
+            "type": "POST",
+            "datatype": "json"
+        },
+        "columns": [
+            { data: "Name" },
+            { data: "Description" },
+            {
+                data: "LastUpdateDate",
+                type: 'date'//,
+                //render: function (data) { return data ? moment(data).format('ddd DD/MM/YY') : ''; }
+            }
+        ],
         "pagingType": "full_numbers",
-        "pageLength": 10,
+        "language": {
+            "processing": "processing... please wait"
+        },
+        stateSave: true,
         autoFill: true,
         bAutoWidth: true,
         aoColumns: [
@@ -12,7 +31,6 @@ $(document).ready(function () {
             { sWidth: '15%' }
         ],
         scrollY: '60vh',
-        scrollCollapse: true,
-        "lengthMenu": [[10, 25, -1], [10, 25, "All"]]
+        scrollCollapse: true
     });
 });
