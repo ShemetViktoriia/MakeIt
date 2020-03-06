@@ -17,11 +17,14 @@ $(document).ready(function () {
             { data: "Id" },
             { data: "Name" },
             { data: "Description" },
-            {
-                data: "LastUpdateDate",
-                type: 'date'
-            }
+            { data: "LastUpdateDate" }
         ],
+        "columnDefs": [{
+            "targets": 3,
+            "render": function (data, type, row, meta) {
+                return moment(data).format('D/M/YYYY');
+            }
+        }],                    
         searchDelay: 350,
         "pagingType": "full_numbers",
         "language": {

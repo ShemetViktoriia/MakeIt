@@ -18,86 +18,86 @@
         </div>
     </div>
     <!-- /.row -->
-
     @*@if (Model.Any())
-    {*@
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <table id="projectTable" class="display table-bordered" cellspacing="0" cellpadding="3" width="100%" style="width: 0px;">
-                            <thead>
+        {*@
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table id="projectTable" class="display table-bordered" cellspacing="0" cellpadding="3" width="100%" style="width: 0px;">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Update Date</th>
+                            </tr>
+                        </thead>
+                        @*<tbody>*@
+                        @*@foreach (var project in Model)
+                            {
                                 <tr>
-                                    <th>Id</th>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Update Date</th>
-                                </tr>
-                            </thead>
-                           @*<tbody>*@
-                                 @*@foreach (var project in Model)
-                                {
-                                    <tr>
-                                        @Html.Hidden(@project.Id.ToString())
-                                        <td>
-                                            <span>
-                                                @Html.ActionLink("#"+@project.Id.ToString()+" - " + @project.Name, "Edit", "Project",
-                                                new 
-                                                {
-                                                    projectId = @project.Id,
-                                                    isNewProject = false
-                                                },
-                                                htmlAttributes: new { @class = "text-dark" })
-                                            </span>&nbsp;
-                                            @if (project.RoleInProject == RoleInProjectEnum.Owner)
+                                    @Html.Hidden(@project.Id.ToString())
+                                    <td>
+                                        <span>
+                                            @Html.ActionLink("#"+@project.Id.ToString()+" - " + @project.Name, "Edit", "Project",
+                                            new
                                             {
-                                                <span>&nbsp;</span><span class="label label-info">@project.RoleInProject</span>
-                                            }
-                                            @if (project.RoleInProject == RoleInProjectEnum.Member)
-                                            {
-                                                <span>&nbsp;</span><span class="label label-default">@project.RoleInProject</span>
-                                            }
-                                            @if (project.IsClosed)
-                                            {
-                                                <span>&nbsp;</span><span class="label label-danger">@ProjectStateEnum.Closed</span>
-                                            }
-                                        </td>
-                                        <td>@project.Description</td>
+                                                projectId = @project.Id,
+                                                isNewProject = false
+                                            },
+                                            htmlAttributes: new { @class = "text-dark" })
+                                        </span>&nbsp;
+                                        @if (project.RoleInProject == RoleInProjectEnum.Owner)
+                                        {
+                                            <span>&nbsp;</span><span class="label label-info">@project.RoleInProject</span>
+                                        }
+                                        @if (project.RoleInProject == RoleInProjectEnum.Member)
+                                        {
+                                            <span>&nbsp;</span><span class="label label-default">@project.RoleInProject</span>
+                                        }
+                                        @if (project.IsClosed)
+                                        {
+                                            <span>&nbsp;</span><span class="label label-danger">@ProjectStateEnum.Closed</span>
+                                        }
+                                    </td>
+                                    <td>@project.Description</td>
 
-                                        <td>@project.LastUpdateDate.Value.ToLocalTime()</td>
-                                    </tr>
-                                }*@
-                            @*</tbody>*@
-                            <tfoot>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Update Date</th>
+                                    <td>@project.LastUpdateDate.Value.ToLocalTime()</td>
                                 </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+                            }*@
+                        @*</tbody>*@
+                        <tfoot>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Update Date</th>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
-                <!-- /.panel-body -->
             </div>
-            <!-- /.col-lg-12 -->
+            <!-- /.panel-body -->
         </div>
-        <!-- /.row -->
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
     @*}*@
 
     @*else
-    {
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="panel-body">
-                    You don't have any projects yet.
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        You don't have any projects yet.
+                    </div>
                 </div>
             </div>
-        </div>
-    }*@
+        }*@
 
 </div>
-<script src="~/Scripts/plugins/dataTables/projectList.js"></script>
+
+<script src="~/Scripts/plugins/dataTables/projectList.js" defer></script>
 
 <!-- /.page-wrapper -->
