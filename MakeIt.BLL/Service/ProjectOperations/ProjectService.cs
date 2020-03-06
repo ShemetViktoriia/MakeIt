@@ -2,15 +2,18 @@
 using MakeIt.BLL.Common;
 using MakeIt.BLL.DTO;
 using MakeIt.BLL.Enum;
-using MakeIt.BLL.Pagination;
 using MakeIt.EF;
 using MakeIt.Repository.UnitOfWork;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Data.Entity.SqlServer;
 
 namespace MakeIt.BLL.Service.ProjectOperations
 {
-    public interface IProjectService : IEntityService<Project>, IPagination<ProjectDTO>
+    public interface IProjectService : IEntityService<Project>
     {
         IEnumerable<ProjectDTO> GetUserProjectsById(int userId);
         ProjectDTO GetProjectById(int projectId);
@@ -94,24 +97,17 @@ namespace MakeIt.BLL.Service.ProjectOperations
             return projectOwnerDTOList.Union(projectMemberDTOList);
         }
 
-        public IEnumerable<ProjectDTO> GetPaginated(string filter, int initialPage, int pageSize, out int totalRecords, out int recordsFiltered)
+        protected override IQueryable<Project> GetWhereQueryForSearchValue(IQueryable<Project> queryable, string searchValue)
         {
-            var data = _unitOfWork.GetRepository<Project>().GetAll().AsQueryable();
-            totalRecords = data.Count();
-
-            if (!string.IsNullOrEmpty(filter))
-            {
-                data = data.Where(p => p.Name.ToUpper().Contains(filter.ToUpper()) || p.Description.ToUpper().Contains(filter.ToUpper()));
-            }
-
-            recordsFiltered = data.Count();
-
-            data = data
-                    .OrderBy(p => p.Name)
-                    .Skip(initialPage * pageSize)
-                    .Take(pageSize);
-
-            return _mapper.Map<IEnumerable<ProjectDTO>>(data);
+            return queryable.Where(x =>
+                    // id column (int)
+                    SqlFunctions.StringConvert((double)x.Id).Contains(searchValue)
+                    // name column (string)
+                    || x.Name.Contains(searchValue)
+                    // description column (string)
+                    || x.Description.Contains(searchValue)
+                    // date (datetime, formatted as d/M/yyyy) - limitation of sql prevented us from getting leading zeros in day or month
+                    || (SqlFunctions.StringConvert((double)SqlFunctions.DatePart("dd", x.CreatedDate)) + "/" + SqlFunctions.DatePart("mm", x.CreatedDate) + "/" + SqlFunctions.DatePart("yyyy", x.CreatedDate)).Contains(searchValue));
         }
     }
 }

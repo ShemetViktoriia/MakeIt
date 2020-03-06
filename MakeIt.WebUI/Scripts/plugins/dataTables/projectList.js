@@ -1,23 +1,28 @@
 $(document).ready(function () {
+    $.ajaxSetup({
+        cache: false
+    });
+
     $('#projectTable').DataTable({
         "paging": true,
         "serverSide": "true",
         "processing": "true",
         "aLengthMenu": [[10, 25, -1], [10, 25, "All"]],
         "ajax": {
-            "url": $("#projectTable").prop("data-url"),
-            "type": "POST",
-            "datatype": "json"
+            "url": "/Project/ProjectListViewData"
+            //"type": "POST", // ajax type must be match to controllers action type
+            //"datatype": "json"
         },
         "columns": [
+            { data: "Id" },
             { data: "Name" },
             { data: "Description" },
             {
                 data: "LastUpdateDate",
-                type: 'date'//,
-                //render: function (data) { return data ? moment(data).format('ddd DD/MM/YY') : ''; }
+                type: 'date'
             }
         ],
+        searchDelay: 350,
         "pagingType": "full_numbers",
         "language": {
             "processing": "processing... please wait"

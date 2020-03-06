@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace MakeIt.Repository.GenericRepository
@@ -12,6 +13,7 @@ namespace MakeIt.Repository.GenericRepository
         IEnumerable<TType> Get<TType>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TType>> select) where TType : class;
         IEnumerable<TType> Get<TType>(Expression<Func<TEntity, TType>> select) where TType : class;
         IEnumerable<TEntity> GetAll();
+        IQueryable<TEntity> GetQuryableAll();
         IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
         TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate);
 

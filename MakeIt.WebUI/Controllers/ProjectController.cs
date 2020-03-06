@@ -3,11 +3,13 @@ using MakeIt.BLL.DTO;
 using MakeIt.BLL.Service.Authorithation;
 using MakeIt.BLL.Service.ProjectOperations;
 using MakeIt.WebUI.Filters;
+using MakeIt.WebUI.Response;
 using MakeIt.WebUI.SignalR.Hubs;
 using MakeIt.WebUI.ViewModel;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -27,30 +29,69 @@ namespace MakeIt.WebUI.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            //int userId = User.Identity.GetUserId<int>();
-            //var projectDTOList = _projectService.GetUserProjectsById(userId).ToList();
-            //var projectViewModelList = _mapper. Map<IEnumerable<ProjectViewModel>>(projectDTOList);
-            //return View(projectViewModelList);
             return View();
         }
 
-        [HttpPost]
-        public ActionResult Index(int? draw, int? start, int? length)
+        /// <summary>
+        /// Returns JQuery Datatable JSON for server-side processing, using a view in the DB to improve performance 
+        /// and simplify logic needed for searching/sorting. This allows generic implementation of a full word search
+        /// on the DB against all columns.
+        /// </summary>
+        /// <param name="draw">pass this back unchanged in the response</param>
+        /// <param name="start">number of records to skip</param>
+        /// <param name="length">number of records to return</param>
+        /// <returns>JSON for Datatables response</returns>
+        public async Task<JsonResult> ProjectListViewData(int draw, int start, int length)
         {
-            string search = Request["search[value]"];
-            var totalRecords = 0;
-            var recordsFiltered = 0;
-            start = start.HasValue ? start / 10 : 0;
+            // get the column index of datatable to sort on
+            var orderByColumnNumber = Convert.ToInt32(Request.QueryString["order[0][column]"]);
+            var orderColumnName = GetProjectListColumnName(orderByColumnNumber);
 
-            var projectListDTO = _projectService.GetPaginated(search, start.Value, length ?? 0, out totalRecords, out recordsFiltered);
-            var projectListViewModel = _mapper.Map<IEnumerable<ProjectViewModel>>(projectListDTO);
-            return Json(new
+            // get direction of sort
+            var orderDirection = Request.QueryString["order[0][dir]"] == "asc"
+                ? ListSortDirection.Ascending
+                : ListSortDirection.Descending;
+
+            // get the search string
+            var searchString = Request.QueryString["search[value]"];
+
+
+            var recordsTotal = await _projectService.GetRecordsTotalAsync();
+            var recordsFiltered = await _projectService.GetRecordsFilteredAsync(searchString);
+            var projectListDTO = _mapper.Map<IEnumerable<ProjectDTO>>(await _projectService.GetPagedSortedFilteredListAsync(start, length, orderColumnName, orderDirection, searchString));
+            var data = _mapper.Map<IEnumerable<ProjectViewModel>>(projectListDTO);
+
+            var response = new DataTablesResponse<ProjectViewModel>()
             {
-                draw = Convert.ToInt32(draw),
-                recordsTotal = totalRecords,
-                recordsFiltered,
-                data = projectListViewModel
-            }, JsonRequestBehavior.AllowGet);
+                draw = draw,
+                recordsTotal = recordsTotal,
+                recordsFiltered = recordsFiltered,
+                data = data
+            };
+
+            // serialize response object to json string
+            var jsonResponse = Json(response, JsonRequestBehavior.AllowGet);
+
+            return jsonResponse;
+        }
+
+        private string GetProjectListColumnName(int columnNumber)
+        {
+            switch (columnNumber)
+            {
+                case 0:
+                    return "Id";
+
+                case 1:
+                    return "Name";
+
+                case 2:
+                    return "Description";
+
+                case 3:
+                    return "LastUpdateDate";
+            }
+            return string.Empty;
         }
 
         [HttpGet]

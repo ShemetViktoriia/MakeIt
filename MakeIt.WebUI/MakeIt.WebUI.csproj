@@ -216,6 +216,8 @@
     <Compile Include="ReCaptchaV3\ICaptchaValidationService.cs" />
     <Compile Include="ReCaptchaV3\InvisibleRecaptchaValidationService.cs" />
     <Compile Include="ReCaptchaV3\ValidateRecaptchaAttribute.cs" />
+    <Compile Include="Response\DatatablesResponse.cs" />
+    <Compile Include="Response\IDatatablesResponse.cs" />
     <Compile Include="SignalR\Hubs\InviteNotificationHub.cs" />
     <Compile Include="SignalR\User.cs" />
     <Compile Include="Startup.cs" />

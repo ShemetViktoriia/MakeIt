@@ -9,58 +9,63 @@ namespace MakeIt.Repository.GenericRepository
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         protected readonly DbContext _context;
-        protected readonly IDbSet<TEntity> _dbset;
+        protected readonly IDbSet<TEntity> _dbSet;
 
         // ctor
         public GenericRepository(DbContext context)
         {
             _context = context;
-            _dbset = context.Set<TEntity>();
+            _dbSet = context.Set<TEntity>();
         }
 
         #region Create Methods
         public TEntity Add(TEntity entity)
         {
-            return _dbset.Add(entity);
+            return _dbSet.Add(entity);
         }
         #endregion
 
         #region Retrieve Methods
         public TEntity Get(int id)
         {
-            return _dbset.Find(id);
+            return _dbSet.Find(id);
         }
 
         public IEnumerable<TType> Get<TType>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TType>> select) where TType : class
         {
-            return _dbset.Where(where).Select(select).AsEnumerable();
+            return _dbSet.Where(where).Select(select).AsEnumerable();
         }
 
         public IEnumerable<TType> Get<TType>(Expression<Func<TEntity, TType>> select) where TType : class
         {
-            return _dbset.Select(select).AsEnumerable();
+            return _dbSet.Select(select).AsEnumerable();
+        }
+
+        public IQueryable<TEntity> GetQuryableAll()
+        {
+            return _dbSet.AsQueryable();
         }
 
         public IEnumerable<TEntity> GetAll()
         {
-            return _dbset.AsEnumerable();
+            return _dbSet.AsEnumerable();
         }
 
         public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
         {
-            return _dbset.Where(predicate).AsEnumerable();
+            return _dbSet.Where(predicate).AsEnumerable();
         }
 
         public TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate)
         {
-            return _dbset.SingleOrDefault(predicate);
+            return _dbSet.SingleOrDefault(predicate);
         }
         #endregion
 
         #region Update Methods
         public void Edit(TEntity entity)
         {
-            _dbset.Attach(entity);
+            _dbSet.Attach(entity);
             _context.Entry(entity).State = EntityState.Modified;
         }
 
@@ -76,13 +81,13 @@ namespace MakeIt.Repository.GenericRepository
         #region Delete Methods
         public void Delete(int id)
         {
-            TEntity ent = _dbset.Find(id);
-            _dbset.Remove(ent);
+            TEntity ent = _dbSet.Find(id);
+            _dbSet.Remove(ent);
         }
 
         public void Delete(TEntity entity)
         {
-            _dbset.Remove(entity);
+            _dbSet.Remove(entity);
         }
         #endregion
     }
