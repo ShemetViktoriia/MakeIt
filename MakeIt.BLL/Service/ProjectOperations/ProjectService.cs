@@ -48,7 +48,7 @@ namespace MakeIt.BLL.Service.ProjectOperations
             {
                 Name = project.Name,
                 Description = project.Description,
-                //Owner = _unitOfWork.GetRepository<User>().Get(ownerId)
+                User = _unitOfWork.GetRepository<User>().Get(ownerId)
             };
             _unitOfWork.GetRepository<Project>().Add(projectAdded);
             _unitOfWork.SaveChanges();
