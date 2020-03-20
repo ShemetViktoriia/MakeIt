@@ -1,0 +1,52 @@
+﻿@{
+    //ViewBag.Title = "MakeIt";
+}
+
+<div id="page-wrapper">
+
+    <div class="row">
+        <div class="col-lg-10">
+            <h1 class="page-header">Tasks</h1>
+        </div>
+        <div class="col-lg-2">
+            <button type="button" onclick="location.href='@Url.Action("Create", "Task",  routeValues: null)'" class="page-header btn btn-success">New task</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table id="taskTable" class="display table-bordered" cellspacing="0" cellpadding="3" width="100%" style="width: 0px;">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Priority</th>
+                                <th>CreatedUser</th>
+                                <th>Project</th>
+                                <th>DueDate</th>
+
+                                @*{ data: "Id" },
+                                { data: "Title" },
+                                { data: "Description" },
+                                { data: "Status" },
+                                { data: "Priority" },
+                                { data: "CreatedUser" },
+                                { data: "Project" },
+                                { data: "DueDate" }*@
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+</div>
+
+<script src="~/Scripts/plugins/dataTables/taskList.js" defer></script>
+<!-- /.page-wrapper -->

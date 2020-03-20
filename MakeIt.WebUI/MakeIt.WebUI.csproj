@@ -283,6 +283,7 @@
     <Content Include="Oxygen-Icons.org-Oxygen-Actions-view-pim-tasks.ico" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\plugins\dataTables\taskList.js" />
     <Content Include="Scripts\validateProjectInput.js" />
     <Content Include="Scripts\validateEmailInput.js" />
     <Content Include="Scripts\jquery-ui-1.11.4.js" />
@@ -357,6 +358,7 @@
     <Content Include="Views\Task\Show.cshtml" />
     <Content Include="Views\Task\Edit.cshtml" />
     <Content Include="Views\Task\_ViewStart.cshtml" />
+    <Content Include="Views\Task\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MakeIt.BLL\MakeIt.BLL.csproj">

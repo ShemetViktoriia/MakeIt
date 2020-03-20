@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="MakeItModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DB_A54F87_MakeItModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Color">
           <Key>
             <PropertyRef Name="Id" />
@@ -440,7 +440,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="MakeItModelStoreContainer">
+        <Function Name="GetTaskSelectedPage_sp" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="SearchValue" Type="nvarchar" Mode="In" />
+          <Parameter Name="PageNo" Type="int" Mode="In" />
+          <Parameter Name="PageSize" Type="int" Mode="In" />
+          <Parameter Name="SortColumn" Type="nvarchar" Mode="In" />
+          <Parameter Name="SortOrder" Type="nvarchar" Mode="In" />
+          <Parameter Name="AssignedUserId" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="DB_A54F87_MakeItModelStoreContainer">
           <EntitySet Name="Color" EntityType="Self.Color" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Comment" EntityType="Self.Comment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ExceptionDetail" EntityType="Self.ExceptionDetail" Schema="dbo" store:Type="Tables" />
@@ -534,7 +542,7 @@
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="MakeItModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="DB_A54F87_MakeItModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="Color">
           <Key>
             <PropertyRef Name="Id" />
@@ -638,6 +646,14 @@
           <NavigationProperty Name="Tasks" Relationship="Self.FK_dbo_Task_dbo_Project_ProjectId" FromRole="Project" ToRole="Task" />
           <NavigationProperty Name="Users" Relationship="Self.ProjectUser" FromRole="Project" ToRole="User" />
         </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Users" Relationship="Self.UserRole" FromRole="Role" ToRole="User" />
+        </EntityType>
         <EntityType Name="Status">
           <Key>
             <PropertyRef Name="Id" />
@@ -703,7 +719,7 @@
           <NavigationProperty Name="UserClaims" Relationship="Self.FK_UserClaim_User" FromRole="User" ToRole="UserClaim" />
           <NavigationProperty Name="UserLogins" Relationship="Self.FK_UserLogin_User" FromRole="User" ToRole="UserLogin" />
           <NavigationProperty Name="Projects1" Relationship="Self.ProjectUser" FromRole="User" ToRole="Project" />
-          <NavigationProperty Name="Roles" Relationship="MakeItModel.UserRole" FromRole="User" ToRole="Role" />
+          <NavigationProperty Name="Roles" Relationship="Self.UserRole" FromRole="User" ToRole="Role" />
         </EntityType>
         <EntityType Name="UserClaim">
           <Key>
@@ -892,7 +908,11 @@
           <End Role="Label" Type="Self.Label" Multiplicity="*" />
           <End Role="Task" Type="Self.Task" Multiplicity="*" />
         </Association>
-        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+        <Association Name="UserRole">
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+          <End Role="Role" Type="Self.Role" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="MakeItContext1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Colors" EntityType="Self.Color" />
           <EntitySet Name="Comments" EntityType="Self.Comment" />
           <EntitySet Name="ExceptionDetails" EntityType="Self.ExceptionDetail" />
@@ -900,6 +920,7 @@
           <EntitySet Name="Milestones" EntityType="Self.Milestone" />
           <EntitySet Name="Priorities" EntityType="Self.Priority" />
           <EntitySet Name="Projects" EntityType="Self.Project" />
+          <EntitySet Name="Roles" EntityType="Self.Role" />
           <EntitySet Name="Status" EntityType="Self.Status" />
           <EntitySet Name="Tasks" EntityType="Self.Task" />
           <EntitySet Name="Users" EntityType="Self.User" />
@@ -962,32 +983,39 @@
             <End Role="Label" EntitySet="Labels" />
             <End Role="Task" EntitySet="Tasks" />
           </AssociationSet>
-          <EntitySet Name="Roles" EntityType="MakeItModel.Role" />
-          <AssociationSet Name="UserRole" Association="MakeItModel.UserRole">
+          <AssociationSet Name="UserRole" Association="Self.UserRole">
             <End Role="User" EntitySet="Users" />
             <End Role="Role" EntitySet="Roles" />
           </AssociationSet>
+          <FunctionImport Name="GetTaskSelectedPage_sp" ReturnType="Collection(DB_A54F87_MakeItModel.GetTaskSelectedPage_sp_Result)">
+            <Parameter Name="SearchValue" Mode="In" Type="String" />
+            <Parameter Name="PageNo" Mode="In" Type="Int32" />
+            <Parameter Name="PageSize" Mode="In" Type="Int32" />
+            <Parameter Name="SortColumn" Mode="In" Type="String" />
+            <Parameter Name="SortOrder" Mode="In" Type="String" />
+            <Parameter Name="AssignedUserId" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
-        <EntityType Name="Role">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Users" Relationship="MakeItModel.UserRole" FromRole="Role" ToRole="User" />
-        </EntityType>
-        <Association Name="UserRole">
-          <End Type="MakeItModel.User" Role="User" Multiplicity="*" />
-          <End Type="MakeItModel.Role" Role="Role" Multiplicity="*" />
-        </Association>
+        <ComplexType Name="GetTaskSelectedPage_sp_Result">
+          <Property Type="Int32" Name="RecordsTotal" Nullable="true" />
+          <Property Type="Int32" Name="ID" Nullable="true" />
+          <Property Type="String" Name="Title" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="500" />
+          <Property Type="DateTime" Name="DueDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="Priority" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Status" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Project" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="AssignedUser" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="CreatedUser" Nullable="true" MaxLength="100" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="MakeItModelStoreContainer" CdmEntityContainer="Entities">
+        <EntityContainerMapping StorageEntityContainer="DB_A54F87_MakeItModelStoreContainer" CdmEntityContainer="MakeItContext1">
           <EntitySetMapping Name="Colors">
-            <EntityTypeMapping TypeName="MakeItModel.Color">
+            <EntityTypeMapping TypeName="DB_A54F87_MakeItModel.Color">
               <MappingFragment StoreEntitySet="Color">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -1000,7 +1028,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Comments">
-            <EntityTypeMapping TypeName="MakeItModel.Comment">
+            <EntityTypeMapping TypeName="DB_A54F87_MakeItModel.Comment">
               <MappingFragment StoreEntitySet="Comment">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Text" ColumnName="Text" />
@@ -1015,7 +1043,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ExceptionDetails">
-            <EntityTypeMapping TypeName="MakeItModel.ExceptionDetail">
+            <EntityTypeMapping TypeName="DB_A54F87_MakeItModel.ExceptionDetail">
               <MappingFragment StoreEntitySet="ExceptionDetail">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ExceptionMessage" ColumnName="ExceptionMessage" />
@@ -1031,7 +1059,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Labels">
-            <EntityTypeMapping TypeName="MakeItModel.Label">
+            <EntityTypeMapping TypeName="DB_A54F87_MakeItModel.Label">
               <MappingFragment StoreEntitySet="Label">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
@@ -1045,7 +1073,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Milestones">
-            <EntityTypeMapping TypeName="MakeItModel.Milestone">
+            <EntityTypeMapping TypeName="DB_A54F87_MakeItModel.Milestone">
               <MappingFragment StoreEntitySet="Milestone">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
@@ -1060,7 +1088,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Priorities">
-            <EntityTypeMapping TypeName="MakeItModel.Priority">
+            <EntityTypeMapping TypeName="DB_A54F87_MakeItModel.Priority">
               <MappingFragment StoreEntitySet="Priority">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -1072,7 +1100,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Projects">
-            <EntityTypeMapping TypeName="MakeItModel.Project">
+            <EntityTypeMapping TypeName="DB_A54F87_MakeItModel.Project">
               <MappingFragment StoreEntitySet="Project">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -1086,8 +1114,16 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="DB_A54F87_MakeItModel.Role">
+              <MappingFragment StoreEntitySet="Role">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Status">
-            <EntityTypeMapping TypeName="MakeItModel.Status">
+            <EntityTypeMapping TypeName="DB_A54F87_MakeItModel.Status">
               <MappingFragment StoreEntitySet="Status">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -1099,7 +1135,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Tasks">
-            <EntityTypeMapping TypeName="MakeItModel.Task">
+            <EntityTypeMapping TypeName="DB_A54F87_MakeItModel.Task">
               <MappingFragment StoreEntitySet="Task">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
@@ -1119,7 +1155,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="MakeItModel.User">
+            <EntityTypeMapping TypeName="DB_A54F87_MakeItModel.User">
               <MappingFragment StoreEntitySet="User">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="IsFired" ColumnName="IsFired" />
@@ -1140,7 +1176,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="UserClaims">
-            <EntityTypeMapping TypeName="MakeItModel.UserClaim">
+            <EntityTypeMapping TypeName="DB_A54F87_MakeItModel.UserClaim">
               <MappingFragment StoreEntitySet="UserClaim">
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="ClaimID" ColumnName="ClaimID" />
@@ -1150,7 +1186,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="UserLogins">
-            <EntityTypeMapping TypeName="MakeItModel.UserLogin">
+            <EntityTypeMapping TypeName="DB_A54F87_MakeItModel.UserLogin">
               <MappingFragment StoreEntitySet="UserLogin">
                 <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
                 <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
@@ -1159,7 +1195,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Visitors">
-            <EntityTypeMapping TypeName="MakeItModel.Visitor">
+            <EntityTypeMapping TypeName="DB_A54F87_MakeItModel.Visitor">
               <MappingFragment StoreEntitySet="Visitor">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Login" ColumnName="Login" />
@@ -1169,7 +1205,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="ProjectUser" TypeName="MakeItModel.ProjectUser" StoreEntitySet="ProjectUser">
+          <AssociationSetMapping Name="ProjectUser" TypeName="DB_A54F87_MakeItModel.ProjectUser" StoreEntitySet="ProjectUser">
             <EndProperty Name="Project">
               <ScalarProperty Name="Id" ColumnName="ProjectId" />
             </EndProperty>
@@ -1177,7 +1213,7 @@
               <ScalarProperty Name="Id" ColumnName="UserId" />
             </EndProperty>
           </AssociationSetMapping>
-          <AssociationSetMapping Name="TaskLabel" TypeName="MakeItModel.TaskLabel" StoreEntitySet="TaskLabel">
+          <AssociationSetMapping Name="TaskLabel" TypeName="DB_A54F87_MakeItModel.TaskLabel" StoreEntitySet="TaskLabel">
             <EndProperty Name="Label">
               <ScalarProperty Name="Id" ColumnName="LabelId" />
             </EndProperty>
@@ -1185,22 +1221,30 @@
               <ScalarProperty Name="Id" ColumnName="TaskId" />
             </EndProperty>
           </AssociationSetMapping>
-          <EntitySetMapping Name="Roles">
-            <EntityTypeMapping TypeName="MakeItModel.Role">
-              <MappingFragment StoreEntitySet="Role">
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <AssociationSetMapping Name="UserRole" TypeName="MakeItModel.UserRole" StoreEntitySet="UserRole">
-            <EndProperty Name="Role">
-              <ScalarProperty Name="Id" ColumnName="RoleID" />
-            </EndProperty>
+          <AssociationSetMapping Name="UserRole" TypeName="DB_A54F87_MakeItModel.UserRole" StoreEntitySet="UserRole">
             <EndProperty Name="User">
               <ScalarProperty Name="Id" ColumnName="UserID" />
             </EndProperty>
+            <EndProperty Name="Role">
+              <ScalarProperty Name="Id" ColumnName="RoleID" />
+            </EndProperty>
           </AssociationSetMapping>
+          <FunctionImportMapping FunctionImportName="GetTaskSelectedPage_sp" FunctionName="DB_A54F87_MakeItModel.Store.GetTaskSelectedPage_sp" >
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A54F87_MakeItModel.GetTaskSelectedPage_sp_Result">
+                <ScalarProperty Name="RecordsTotal" ColumnName="RecordsTotal" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="DueDate" ColumnName="DueDate" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Project" ColumnName="Project" />
+                <ScalarProperty Name="AssignedUser" ColumnName="AssignedUser" />
+                <ScalarProperty Name="CreatedUser" ColumnName="CreatedUser" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

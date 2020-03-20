@@ -62,6 +62,7 @@
     <Folder Include="dbo\Tables\" />
     <Folder Include="ContinuousDeployment" />
     <Folder Include="ContinuousDeployment\StaticTables" />
+    <Folder Include="dbo\StoredProcedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Color.sql" />
@@ -81,6 +82,8 @@
     <Build Include="dbo\Tables\ProjectUser.sql" />
     <Build Include="dbo\Tables\ExceptionDetail.sql" />
     <Build Include="dbo\Tables\Visitor.sql" />
+    <None Include="ContinuousDeployment\StaticTables\03192020-DATA-AddNewTasks.sql" />
+    <Build Include="dbo\StoredProcedures\GetTaskSelectedPage_sp.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="ContinuousDeployment\PostDeployment.StaticTablesList.sql" />

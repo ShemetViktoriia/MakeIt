@@ -80,6 +80,9 @@
     <Compile Include="ExceptionDetail.cs">
       <DependentUpon>MakeItModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetTaskSelectedPage_sp_Result.cs">
+      <DependentUpon>MakeItModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Label.cs">
       <DependentUpon>MakeItModel.tt</DependentUpon>
     </Compile>
@@ -150,6 +153,12 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="MakeItModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>MakeItModel.edmx</DependentUpon>
@@ -160,12 +169,6 @@
       <DependentUpon>MakeItModel.edmx</DependentUpon>
       <LastGenOutput>MakeItModel.cs</LastGenOutput>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

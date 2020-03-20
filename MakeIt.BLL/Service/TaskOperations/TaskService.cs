@@ -4,17 +4,19 @@ using MakeIt.BLL.DTO;
 using MakeIt.EF;
 using MakeIt.Repository.UnitOfWork;
 using System.Collections.Generic;
+using System.Data.Entity.SqlServer;
+using System.Linq;
 
 namespace MakeIt.BLL.Service.TaskOperations
 {
-    public interface ITaskService : IEntityService<Project>
+    public interface ITaskService : IEntityService<Task>
     {
         IEnumerable<TaskDTO> GetUserTasksById(int userId);
         TaskDTO CreateTask(TaskDTO task, int ownerId);
         TaskDTO EditTask(TaskDTO task);
     }
 
-    public class TaskService : EntityService<Project>, ITaskService
+    public class TaskService : EntityService<Task>, ITaskService
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -34,8 +36,8 @@ namespace MakeIt.BLL.Service.TaskOperations
                 Priority = _unitOfWork.GetRepository<Priority>().SingleOrDefault(p => p.Name.ToUpper().Equals(task.Priority.ToUpper())),
                 Status = _unitOfWork.GetRepository<Status>().SingleOrDefault(s => s.Name.ToUpper().Equals(task.Status.ToUpper())),
                 Project = _unitOfWork.GetRepository<Project>().SingleOrDefault(pr => pr.Name.ToUpper().Equals(task.Project.ToUpper())),
-                //AssignedUser = _unitOfWork.GetRepository<User>().SingleOrDefault(au => au.UserName.ToUpper().Equals(task.AssignedUser.ToUpper())),
-                //CreatedUser = _unitOfWork.GetRepository<User>().Get(ownerId)
+                User1 = _unitOfWork.GetRepository<User>().SingleOrDefault(au => au.UserName.ToUpper().Equals(task.AssignedUser.ToUpper())),
+                User = _unitOfWork.GetRepository<User>().Get(ownerId)
             };
             using (_unitOfWork)
             {
@@ -54,7 +56,7 @@ namespace MakeIt.BLL.Service.TaskOperations
             taskEdited.Priority = _unitOfWork.GetRepository<Priority>().SingleOrDefault(p => p.Name.ToUpper().Equals(task.Priority.ToUpper()));
             taskEdited.Status = _unitOfWork.GetRepository<Status>().SingleOrDefault(s => s.Name.ToUpper().Equals(task.Status.ToUpper()));
             taskEdited.Project = _unitOfWork.GetRepository<Project>().SingleOrDefault(pr => pr.Name.ToUpper().Equals(task.Project.ToUpper()));
-            //taskEdited.AssignedUser = _unitOfWork.GetRepository<User>().SingleOrDefault(au => au.UserName.ToUpper().Equals(task.AssignedUser.ToUpper()));
+            taskEdited.User1 = _unitOfWork.GetRepository<User>().SingleOrDefault(au => au.UserName.ToUpper().Equals(task.AssignedUser.ToUpper()));
 
             using (_unitOfWork)
             {

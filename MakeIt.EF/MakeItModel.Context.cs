@@ -12,6 +12,8 @@ namespace MakeIt.EF
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class MakeItContext : DbContext
     {
@@ -32,12 +34,41 @@ namespace MakeIt.EF
         public virtual DbSet<Milestone> Milestones { get; set; }
         public virtual DbSet<Priority> Priorities { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Status> Status { get; set; }
         public virtual DbSet<Task> Tasks { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserClaim> UserClaims { get; set; }
         public virtual DbSet<UserLogin> UserLogins { get; set; }
         public virtual DbSet<Visitor> Visitors { get; set; }
-        public virtual DbSet<Role> Roles { get; set; }
+    
+        public virtual ObjectResult<GetTaskSelectedPage_sp_Result> GetTaskSelectedPage_sp(string searchValue, Nullable<int> pageNo, Nullable<int> pageSize, string sortColumn, string sortOrder, Nullable<int> assignedUserId)
+        {
+            var searchValueParameter = searchValue != null ?
+                new ObjectParameter("SearchValue", searchValue) :
+                new ObjectParameter("SearchValue", typeof(string));
+    
+            var pageNoParameter = pageNo.HasValue ?
+                new ObjectParameter("PageNo", pageNo) :
+                new ObjectParameter("PageNo", typeof(int));
+    
+            var pageSizeParameter = pageSize.HasValue ?
+                new ObjectParameter("PageSize", pageSize) :
+                new ObjectParameter("PageSize", typeof(int));
+    
+            var sortColumnParameter = sortColumn != null ?
+                new ObjectParameter("SortColumn", sortColumn) :
+                new ObjectParameter("SortColumn", typeof(string));
+    
+            var sortOrderParameter = sortOrder != null ?
+                new ObjectParameter("SortOrder", sortOrder) :
+                new ObjectParameter("SortOrder", typeof(string));
+    
+            var assignedUserIdParameter = assignedUserId.HasValue ?
+                new ObjectParameter("AssignedUserId", assignedUserId) :
+                new ObjectParameter("AssignedUserId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetTaskSelectedPage_sp_Result>("GetTaskSelectedPage_sp", searchValueParameter, pageNoParameter, pageSizeParameter, sortColumnParameter, sortOrderParameter, assignedUserIdParameter);
+        }
     }
 }

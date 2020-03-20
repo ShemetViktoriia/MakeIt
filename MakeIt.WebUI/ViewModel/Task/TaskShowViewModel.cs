@@ -30,5 +30,7 @@ namespace MakeIt.WebUI.ViewModel
         public string CreatedUser { get; set; }
 
         public string AssignedUser { get; set; }
+
+        public int RecordsTotal { get; set; }
     }
 }

@@ -11,3 +11,4 @@ Post-Deployment Script Template
 */
 
 :r .\StaticTables\02122020-DATA-AddNewProjects.sql
+:r .\StaticTables\03192020-DATA-AddNewTasks.sql

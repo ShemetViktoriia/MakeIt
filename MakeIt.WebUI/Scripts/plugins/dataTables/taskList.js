@@ -3,23 +3,27 @@ $(document).ready(function () {
         cache: false
     });
 
-    $('#projectTable').DataTable({
+    $('#taskTable').DataTable({
         "paging": true,
         "serverSide": "true",
         "processing": "true",
-        "aLengthMenu": [[10, 25, -1], [10, 25, "All"]],
+        "aLengthMenu": [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5]],
         "ajax": {
-            "url": "/Project/ProjectListViewData"
+            "url": "/Task/TaskListViewData"
         },
         "columns": [
             { data: "Id" },
-            { data: "Name" },
+            { data: "Title" },
             { data: "Description" },
-            { data: "LastUpdateDate" }
+            { data: "Status" },
+            { data: "Priority" },
+            { data: "CreatedUser" },
+            { data: "Project" },
+            { data: "DueDate" }
         ],
         "columnDefs": [
             {
-            "targets": 3,
+            "targets": 7,
             "render": function (data, type, row, meta) {
                 return moment(data).format('D/M/YYYY');
                 }
@@ -27,7 +31,7 @@ $(document).ready(function () {
             {
                 "targets": 0,
                 "render": function (data) {
-                    return '<a href="/Project/Edit?projectId=' + data + '">Edit</a>';
+                    return '<a href="/Task/Edit?taskId=' + data + '">Edit</a>';
                 }
             }
         ],                    
